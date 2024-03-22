@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#include <GL/glut.h>
+#include <GLUT/glut.h>
 #include <limits>
 
 unsigned char prevKey;
@@ -100,7 +100,6 @@ void Display2() {
 
 void Display3() {
     double ratia = 0.05;
-    double pi = 4 * atan(1);
     double xmax = 30;
     double ymax = 1;
 
@@ -160,7 +159,7 @@ void Display5() {
     double x, y;
 
     glColor3f(1, 0.1, 0.1);
-    glBegin(GL_LINE_STRIP);
+    glBegin(GL_POINTS);
 
     for (t = -(pi / 2) + r; t < -(pi / 6); t += r) {           // avem nevoie doar de un triunghi, cel din stanga si de asta mergem pana la -pi/6
 
@@ -172,7 +171,7 @@ void Display5() {
             y_arr[n] = y;
             n++;
               
-        glVertex2f(x, y);
+        // glVertex2f(x, y);
     }
 
     glEnd();
@@ -180,16 +179,12 @@ void Display5() {
     glColor3f(1, 0.1, 0.1);
     glBegin(GL_TRIANGLES);
 
-    for (auto i = 1; i < n - 1; i+=1) {                     //parcurgem vectorii din 3 in 3 la i, ca sa avem spatii intre liniile rosii
-        
-        /*if (i > n / 4 && i < 3 * n / 4) continue;*/
-        if (i < 45 || i > 160) {              // in poza data de prof la display5, este o portiune in care nu este trasata nicio linie
-                                                        // si de asta am setat ca in acest interval de "I" sa nu fie trasata nicio linie
-            glVertex2f(-1.0, 1.0);
-            glVertex2f(x_arr[i], y_arr[i]);        
-            glVertex2f(x_arr[i + 1], y_arr[i + 1]);
+    for (auto i = 1; i < n - 1; i+=3) {                     //parcurgem vectorii din 3 in 3 la i, ca sa avem spatii intre liniile rosii
+        if (!(i < 45 || i > 160)) continue;
 
-        }
+        glVertex2f(-1.0, 1.0);
+        glVertex2f(x_arr[i], y_arr[i]);        
+        glVertex2f(x_arr[i + 1], y_arr[i + 1]);
     }
 
     glEnd();
@@ -208,7 +203,7 @@ void Display6() {
     glColor3f(1, 0.1, 0.1);
     glBegin(GL_LINE_STRIP);
 
-    for (double t = -30; t <= 30; t+=r) {               // doua valori random pentru axa Ox (stanga / dreapta)
+    for (double t = -10; t <= 10; t+=r) {
 
         x = a * t - b * sin(t);
         y = a - b * cos(t);
@@ -221,51 +216,6 @@ void Display6() {
 }
 
 void Display7() {
-
-    double R = 0.1;
-    double r = 0.3;
-    double ratia = 0.05;
-    double t;
-    double pi = 4 * atan(1);
-    double x, y;
-
-    glColor3f(1, 0.1, 0.1);
-    glBegin(GL_LINE_STRIP);
-
-    for (t = 0; t <= 2 * pi; t+=ratia) {
-
-        x = (R + r) * cos((r / R) * t) - r * cos(t + (r / R * t));
-        y = (R + r) * sin((r / R) * t) - r * sin(t + (r / R) * t);
-
-        glVertex2f(x, y);
-    }
-    glEnd();
-}
-
-void Display8() {
-
-    double R = 0.1;
-    double r = 0.3;
-    double ratia = 0.05;
-    double t;
-    double pi = 4 * atan(1);
-    double x, y;
-
-    glColor3f(1, 0.1, 0.1);
-    glBegin(GL_LINE_STRIP);
-
-    for (t = 0; t <= 2 * pi; t += ratia) {
-
-        x = (R - r) * cos((r / R) * t) - r * cos(t - (r / R) * t);
-        y = (R - r) * sin((r / R) * t) - r * sin(t - (r / R) * t);
-
-        glVertex2f(x, y);
-    }
-    glEnd();
-
-}
-
-void Display9() {
 
     double a = 0.4;
     double ratia = 0.0005;
@@ -298,10 +248,9 @@ void Display9() {
     }
 
     glEnd();
-
 }
 
-void Display10() {
+void Display8() {
 
     double a = 0.02;
     double ratia = 0.0005;
@@ -325,6 +274,17 @@ void Display10() {
 
     }
     glEnd();
+}
+
+void Display9() {
+
+    
+
+}
+
+void Display10() {
+
+    
 }
 
 void Init(void) {
