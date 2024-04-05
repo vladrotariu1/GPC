@@ -46,30 +46,41 @@ public:
 		for (int i = 0; i <= n; i++)
 		{
 			glBegin(GL_LINE_STRIP);
-			glVertex2f(-1.0 * 0.9, (2.0 / n * i - 1) * 0.9);
-			glVertex2f(1.0 * 0.9, (2.0 / m * i - 1) * 0.9);
+				glVertex2f(-1.0 * 0.9, (2.0 / n * i - 1) * 0.9);
+				glVertex2f(1.0 * 0.9, (2.0 / m * i - 1) * 0.9);
 			glEnd();
 		}
+
 		glColor3f(0.0, 0.0, 0.0);
 		for (int i = 0; i <= m; i++)
 		{
 			glBegin(GL_LINE_STRIP);
-			glVertex2f((2.0 / n * i - 1) * 0.9, -1.0 * 0.9);
-			glVertex2f((2.0 / m * i - 1) * 0.9, 1.0 * 0.9);
+				glVertex2f((2.0 / n * i - 1) * 0.9, -1.0 * 0.9);
+				glVertex2f((2.0 / m * i - 1) * 0.9, 1.0 * 0.9);
 			glEnd();
 		}
 	}
 
 	void createPixel(int n, int m)
 	{
+		int numSegments = 256;
+		float radius = 0.025f;
+
 		float cx = adjustX(n);
 		float cy = adjustY(m);
+
 		glColor3f(0.0, 0.0, 0.0);
-		glBegin(GL_POLYGON);
-		glVertex2f(cx + 0.02, cy + 0.02);
-		glVertex2f(cx + 0.02, cy - 0.02);
-		glVertex2f(cx - 0.02, cy - 0.02);
-		glVertex2f(cx - 0.02, cy + 0.02);
+		glBegin(GL_TRIANGLE_FAN);
+
+		for (int i = 0; i < numSegments; i++) {
+			float theta = 2.0f * 3.1415926f * i / numSegments;
+
+			float x = radius * cosf(theta);
+			float y = radius * sinf(theta);
+
+			glVertex2f(x + cx, y + cy);
+		}
+
 		glEnd();
 	}
 
