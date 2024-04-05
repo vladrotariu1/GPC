@@ -73,7 +73,7 @@ public:
 		glBegin(GL_TRIANGLE_FAN);
 
 		for (int i = 0; i < numSegments; i++) {
-			float theta = 2.0f * 3.1415926f * i / numSegments;
+			float theta = 2.0f * 3.1415926f * (float)i / (float)numSegments;
 
 			float x = radius * cosf(theta);
 			float y = radius * sinf(theta);
@@ -95,14 +95,14 @@ public:
 		float cy2 = adjustY(y2);
 
 		glBegin(GL_LINE_STRIP);
-		glVertex2f(cx1, cy1);
-		glVertex2f(cx2, cy2);
+			glVertex2f(cx1, cy1);
+			glVertex2f(cx2, cy2);
 		glEnd();
 		glLineWidth(1.f);
 
 		std::list<Point> list = ScanConvertSegments3(x1, y1, x2, y2, dots);
-		for (std::list<Point>::iterator it = list.begin(); it != list.end(); ++it)
-			createPixel(it->get_x(), it->get_y());
+		for (Point p : list)
+			createPixel(p.get_x(), p.get_y());
 	}
 
 	std::list<Point> ScanConvertSegments3(int x1, int y1, int x2, int y2, int dots)
@@ -122,7 +122,8 @@ public:
 		int dE = 2 * dy;
 		int dNE = 2 * (dy - dx);
 
-		int x = x1, y = y1;
+		int x = x1;
+		int y = y1;
 
 		for (;x <= x2; x++)
 		{
@@ -157,7 +158,8 @@ public:
 		int dE = 2 * dy;
 		int dSE = 2 * (dy + dx);
 
-		int x = x1, y = y1;
+		int x = x1;
+		int y = y1;
 
 		for(; x <= x2; x++)
 		{
@@ -184,7 +186,7 @@ public:
 
 	void displayCircle(int radius, int dots) {
 		glColor3f(1.0, 0.1, 0.1);
-		glLineWidth(4.f);
+		glLineWidth(4.0f);
 
 		float originx = adjustX(0);
 		float originy = adjustY(0);
@@ -194,12 +196,12 @@ public:
 
 		float r = resx - originx;
 
-		float edges = 512.0;
+		int edges = 256;
 		glBegin(GL_LINE_STRIP);
-		for (float i = 0; i < edges; i++)
+		for (int i = 0; i < edges; i++)
 		{
-			float x = r * cosf(0.5 * 3.1415926 * i / edges);
-			float y = r * sinf(0.5 * 3.1415926 * i / edges);
+			float x = r * cosf(0.5 * M_PI * (float)i / edges);
+			float y = r * sinf(0.5 * M_PI * (float)i / edges);
 
 			glVertex2f((float)x + originx, ((float)y + originy));
 
@@ -209,8 +211,8 @@ public:
 
 		std::list<Point> list = drawCircleAlgorithm(radius, dots);
 
-		for (std::list<Point>::iterator it = list.begin(); it != list.end(); ++it) {
-			createPixel(it->get_x(), it->get_y());
+		for (Point p : list) {
+			createPixel(p.get_x(), p.get_y());
 		}
 
 	}
@@ -221,40 +223,33 @@ public:
 
 		int x = radius;
 		int y = 0;
+
 		int d = 1 - radius;
 		int dN = 3;
 		int dNW = -2 * radius + 5;
 
-		points.push_back(Point(x, y));
-		for (int i = 1; i <= dots / 2; i++)
+		for (;x > y; y++)
 		{
-			points.push_back(Point(x - i, y));
-			points.push_back(Point(x + i, y));
-		}
-
-		while (x > y)
-		{
-			if (d <= 0)
-			{
-				d += dN;
-				dN += 2;
-				dNW += 2;
-			}
-			else
-			{
-				d += dNW;
-				dN += 2;
-				dNW += 4;
-				x--;
-			}
-			y++;
-
 			points.push_back(Point(x, y));
 			for (int i = 1; i <= dots / 2; i++)
 			{
 				points.push_back(Point(x - i, y));
 				points.push_back(Point(x + i, y));
 			}
+
+			if (d <= 0)
+			{
+				d += dN;
+				dNW += 2;
+			}
+			else
+			{
+				d += dNW;
+				dNW += 4;
+				x--;
+			}
+
+			dN += 2;
 		}
 
 		return points;
@@ -320,8 +315,10 @@ void Reshape(int w, int h)
 void KeyboardFunc(unsigned char key, int x, int y)
 {
 	prevKey = key;
-	if (key == 27) // escape
+	
+	if (key == 27)
 		exit(0);
+
 	glutPostRedisplay();
 }
 
